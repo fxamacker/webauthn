@@ -199,7 +199,7 @@ func verifyPackedAttestationStatementCert(c *x509.Certificate) error {
 
 	// todo: An Authority Information Access (AIA) extension with entry id-ad-ocsp and a CRL
 	// Distribution Point extension [RFC5280] are both OPTIONAL as the status of many attestation
-	// certificates is available throught authenticator metadata service.
+	// certificates is available through authenticator metadata service.
 
 	return nil
 }
