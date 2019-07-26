@@ -1,3 +1,7 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/fxamacker/webauthn)](https://goreportcard.com/report/github.com/fxamacker/webauthn)
+[![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/fxamacker/webauthn)
+[![GitHub](https://img.shields.io/github/license/fxamacker/webauthn)](https://github.com/fxamacker/webauthn/blob/master/LICENSE)
+
 # WebAuthn library in Go
 
 `webauthn` library is a reference implementation of [Web Authentication](https://w3c.github.io/webauthn/) to perform server-side [FIDO2 authentication](https://fidoalliance.org/fido2).
