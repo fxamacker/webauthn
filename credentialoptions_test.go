@@ -60,8 +60,8 @@ func TestPublicKeyCredentialRequestOptionsJSONMarshal(t *testing.T) {
 		Timeout:   uint64(60000),
 		RPID:      "acme.com",
 		AllowCredentials: []webauthn.PublicKeyCredentialDescriptor{
-			webauthn.PublicKeyCredentialDescriptor{Type: "public-key", ID: []byte{4, 5, 6}, Transports: []webauthn.AuthenticatorTransport{"usb"}},
-			webauthn.PublicKeyCredentialDescriptor{Type: "public-key", ID: []byte{7, 8, 9}, Transports: []webauthn.AuthenticatorTransport{"internal"}},
+			{Type: "public-key", ID: []byte{4, 5, 6}, Transports: []webauthn.AuthenticatorTransport{"usb"}},
+			{Type: "public-key", ID: []byte{7, 8, 9}, Transports: []webauthn.AuthenticatorTransport{"internal"}},
 		},
 		UserVerification: webauthn.UserVerificationRequired,
 	}

@@ -189,7 +189,7 @@ var newAttestationOptionsTests = []newAttestationOptionsTest{
 			Name:          "Jane Doe",
 			Icon:          "https://janedoe.com/avatar.png",
 			DisplayName:   "Jane",
-			CredentialIDs: [][]byte{[]byte{1, 2, 3}, []byte{4, 5, 6}},
+			CredentialIDs: [][]byte{{1, 2, 3}, {4, 5, 6}},
 		},
 		wantCreationOptions: &webauthn.PublicKeyCredentialCreationOptions{
 			RP:   webauthn.PublicKeyCredentialRpEntity{Name: "ACME Corporation", Icon: "https://acme.com/avatar.png", ID: "acme.com"},
@@ -327,7 +327,7 @@ var newAssertionOptionsTests = []newAssertionOptionsTest{
 		name: "new assertion options with allowCredentials",
 		cfg:  getTestConfig(),
 		user: &webauthn.User{
-			CredentialIDs: [][]byte{[]byte{1, 2, 3}, []byte{4, 5, 6}},
+			CredentialIDs: [][]byte{{1, 2, 3}, {4, 5, 6}},
 		},
 		wantRequestOptions: &webauthn.PublicKeyCredentialRequestOptions{
 			Timeout: uint64(30000),
