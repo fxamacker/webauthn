@@ -16,6 +16,8 @@ This library is simple, flexible, and extensible.
 * Create new attestation format by implementing AttestationStatement interface
 * Not a framework, use `webauthn` directly with new or existing applications to enable FIDO2 authentication
 
+For a simplified demo of this library using jQuery and Bootstrap, refer to [`webauthn-demo`](https://www.github.com/fxamacker/webauthn-demo).
+
 ## Features
 
 * Credential algorithms: RS1, RS256, RS384, RS512, PS256, PS384, PS512, ES256, ES384, and ES512
