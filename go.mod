@@ -1,3 +1,3 @@
 module github.com/fxamacker/webauthn
 
-require github.com/fxamacker/cbor v0.3.0
+require github.com/fxamacker/cbor v1.1.0

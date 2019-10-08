@@ -197,7 +197,7 @@ var parseCredentialTests = []parseCredentialTest{
 }
 
 var parseCredentialErrorTests = []parseCredentialErrorTest{
-	{"invalid cbor data", []byte("hello"), "credential: failed to unmarshal: unexpected EOF"},
+	{"invalid cbor data", []byte("hello"), "credential: failed to unmarshal: EOF"},
 	{"incomplete input data", cborMarshal(incompleteKey), "credential of COSE key type 2 and algorithm -7 is not supported"},
 	{"invalid alg data type", cborMarshal(invalidAlg), "credential: invalid algorithm"},
 	{"missing alg", cborMarshal(missingAlg), "credential: missing algorithm"},
