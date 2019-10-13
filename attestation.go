@@ -18,8 +18,7 @@ type AttestationType int
 
 // Attestation types are defined in http://w3c.github.io/webauthn/#sctn-attestation-types
 const (
-	AttestationTypeUndefined AttestationType = iota
-	AttestationTypeBasic
+	AttestationTypeBasic AttestationType = iota + 1
 	AttestationTypeSelf
 	AttestationTypeCA
 	AttestationTypeECDAA
