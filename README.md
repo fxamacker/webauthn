@@ -7,9 +7,13 @@
 
 WebAuthn (Web Authentication) is a [web standard](https://w3c.github.io/webauthn/) for authenticating users to web-based applications and services.  It is a core component of FIDO2, which is the successor of FIDO U2F legacy protocol.
 
-fxamacker/webauthn performs server-side authentication to handle clients using FIDO2 keys, legacy FIDO U2F keys, and etc.
+fxamacker/webauthn performs server-side authentication for clients using FIDO2 keys, legacy FIDO U2F keys, etc.
 
-This library isn't a framework, so it's easy to use in your existing server projects.
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/57072051/68431219-4e066780-0177-11ea-8a3f-5a137cc76cf1.png" alt="Picture of FIDO U2F key">
+</p>
+
+This library is easy to use in existing server projects.  It's decoupled from `net/http` and isn't a framework.
 
 For a simple webapp demo, see [`webauthn-demo`](https://www.github.com/fxamacker/webauthn-demo).
 
