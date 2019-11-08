@@ -1,15 +1,19 @@
-[![Build Status](https://travis-ci.com/fxamacker/webauthn.svg?branch=master)](https://travis-ci.com/fxamacker/webauthn)
+<!--[![Build Status](https://travis-ci.com/fxamacker/webauthn.svg?branch=master)](https://travis-ci.com/fxamacker/webauthn)-->
 [![Go Report Card](https://goreportcard.com/badge/github.com/fxamacker/webauthn)](https://goreportcard.com/report/github.com/fxamacker/webauthn)
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/fxamacker/webauthn)
 [![GitHub](https://img.shields.io/github/license/fxamacker/webauthn)](https://github.com/fxamacker/webauthn/blob/master/LICENSE)
 
 # fxamacker/webauthn - FIDO2 server library in Go
 
-WebAuthn (Web Authentication) is a [web standard](https://w3c.github.io/webauthn/) for authenticating users to web-based applications and services.  It is a core component of FIDO2, which is the successor of FIDO U2F legacy protocol.
+WebAuthn (Web Authentication) is a [web standard](https://w3c.github.io/webauthn/) for authenticating users to web-based apps and services.  It's a core component of FIDO2, the successor of FIDO U2F legacy protocol.
 
-fxamacker/webauthn performs server-side authentication to handle clients using FIDO2 keys, legacy FIDO U2F keys, and etc.
+This library performs server-side authentication for clients using FIDO2 keys, legacy FIDO U2F keys, etc.
 
-This library isn't a framework, so it's easy to use in your existing server projects.
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/57072051/68431219-4e066780-0177-11ea-8a3f-5a137cc76cf1.png" alt="Picture of FIDO U2F key">
+</p>
+
+**It's easy to use without rewriting your projects**, because it's decoupled from `net/http` and isn't a framework.
 
 For a simple webapp demo, see [`webauthn-demo`](https://www.github.com/fxamacker/webauthn-demo).
 
