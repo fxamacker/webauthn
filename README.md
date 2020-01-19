@@ -221,9 +221,15 @@ This library doesn't support:
 * CA attestation
 * Elliptic Curve Direct Anonymous Attestation (ECDAA)
 
-## Thanks
+## Special Thanks
 
-A huge thanks to [herrjemand](https://www.github.com/herrjemand) for his extensive [tutorials](https://medium.com/@herrjemand) on WebAuthn/FIDO2.  [apowers313](https://github.com/apowers313)'s [fido2-lib](https://github.com/apowers313/fido2-lib) pointed me in the direction of separating WebAuthn functionality from any networking protocol.  This library also uses attestation and assertion test data from herrjemand and apowers313.
+* Montgomery Edwards⁴⁴⁸ [(x448)](https://github.com/x448) for updating README.md and filing helpful issues.
+
+* Ackermann Yuriy [(herrjemand)](https://github.com/herrjemand) for his extensive [tutorials](https://medium.com/@herrjemand) on WebAuthn/FIDO2.  
+
+* Adam Powers [(apowers313)](https://github.com/apowers313) for [fido2-lib](https://github.com/apowers313/fido2-lib) because that pointed me in the direction of separating WebAuthn functionality from any networking protocol.  
+
+This library uses attestation and assertion test data from both herrjemand and apowers313.
 
 ## License 
 
