@@ -3,33 +3,41 @@
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/fxamacker/webauthn)
 [![GitHub](https://img.shields.io/github/license/fxamacker/webauthn)](https://github.com/fxamacker/webauthn/blob/master/LICENSE)
 
-# fxamacker/webauthn - FIDO2 server library in Go
+# WebAuthn server library (Go/Golang)
 
-WebAuthn (Web Authentication) is a [web standard](https://w3c.github.io/webauthn/) for authenticating users to web-based apps and services.  It's a core component of FIDO2, the successor of FIDO U2F legacy protocol.
+This [WebAuthn](https://en.wikipedia.org/wiki/WebAuthn) library performs server-side authentication for clients using FIDO2 keys, legacy FIDO U2F keys, and etc.
 
-This library performs server-side authentication for clients using FIDO2 keys, legacy FIDO U2F keys, etc.
+It's decoupled from `net/http` and doesn't force you to use a framework.  So it's easy to use in existing projects.
+
+It's modular so you only import what you need. Five attestation packages are available: fidou2f, androidkeystore, androidsafetynet, packed, and tpm.
+
+It doesn't import unreliable 3rd-party packages. It uses [fxamacker/cbor](https://github.com/fxamacker/cbor) because it doesn't crash and it's the most well-tested CBOR library available (v1.5 has 375+ tests and passed 3+ billion execs in coverage-guided fuzzing).
+
+A [demo webapp (webauthn-demo)](https://www.github.com/fxamacker/webauthn-demo) shows how to use this library with a security token like the YubiKey pictured here.
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/57072051/68431219-4e066780-0177-11ea-8a3f-5a137cc76cf1.png" alt="Picture of FIDO U2F key">
 </p>
 
-**It's easy to use without rewriting your projects**, because it's decoupled from `net/http` and isn't a framework.
-
-For a simple webapp demo, see [`webauthn-demo`](https://www.github.com/fxamacker/webauthn-demo).
+## What's WebAuthn?
+WebAuthn (Web Authentication) is a [W3C web standard](https://www.w3.org/TR/webauthn-2/) for authenticating users to web-based apps and services.  It's a core component of FIDO2, the successor of FIDO U2F legacy protocol.
 
 ## Project Goals ##
 fxamacker/webauthn is designed to be:
-* **small and nearly self-contained** -- only 1 external dependency: [fxamacker/cbor](https://www.github.com/fxamacker/cbor)
-* **simple and lightweight** -- decoupled from `net/http` and is not a framework
-* **modular** -- 5 separate attestation packages (packed, tpm, androidkeystore, androidsafetynet, and fidou2f), so you only import what you need.
 
-## Status ##
-**Expired certificates embedded in test data cause tests to fail**, so that should be resolved. Test datetime can be faked locally, but online tests will show failure and scare people.
-* :construction: **replace expired test certs** -- test certs expire and cause tests to fail, find a way to automate replacement
-* :construction: **more tests and fuzzing** -- add extensive tests and fuzzing similar to fxamacker/cbor and fxamacker/cbor-fuzz
-* :construction: **standards compliance** -- pass and publish results of standards conformance tests
+* __small and no unreliable imports__ -- only 1 external dependency [fxamacker/cbor](https://www.github.com/fxamacker/cbor)
+* __simple and lightweight__ -- decoupled from `net/http` and is not a framework
+* __modular__ -- 5 separate attestation packages (packed, tpm, androidkeystore, androidsafetynet, and fidou2f), so you only import what you need.
+
+## Todo ##
+It works but needs some cleanup.  Expired certificates embedded in test data cause online (travis-ci) unit tests to fail.  A temporary workaround is to fake datetime when running unit tests locally until this is resolved.
+
+* __replace expired certs in unit tests__ -- automate replacement of these and/or make expiration dates longer
+* __more tests and fuzzing__ -- add more extensive tests and fuzzing like fxamacker/cbor and fxamacker/cbor-fuzz
+* __standards compliance__ -- pass and publish results of standards conformance tests
 
 ## Features
+
 * Easy server-side authentication for clients using FIDO2 keys, legacy FIDO U2F keys, and etc.
 * Register credential algorithm for use
 * Register attestation format for use
@@ -37,7 +45,7 @@ fxamacker/webauthn is designed to be:
 * Credential algorithms: RS1, RS256, RS384, RS512, PS256, PS384, PS512, ES256, ES384, and ES512
 * Credential public key types: RSA, RSA-PSS, and ECDSA
 * Credential public key curves: P-256, P-384, and P-521
-* Attestation formats: packed, tpm, android-key, android-safetynet, fido-u2f, and none
+* Attestation formats: fido-u2f, android-key, android-safetynet, packed, tpm, and none
 * Attestation types: Basic, Self, and None
 
 ## Installation 
@@ -50,7 +58,7 @@ go get github.com/fxamacker/webauthn
 
 See [API docs](https://godoc.org/github.com/fxamacker/webauthn).
 
-**Create assertion or attestation options:**
+__Create assertion or attestation options:__
 
 NewAssertionOptions creates [PublicKeyCredentialRequestOptions](https://w3c.github.io/webauthn/#dictionary-assertion-options).  NewAttestationOptions creates [PublicKeyCredentialCreationOptions](https://w3c.github.io/webauthn/#dictionary-makecredentialoptions).  Config represents Relying Party settings used to create those options.  Config is initialized at startup and used throughout the program.  User contains user data for which the Relying Party requests attestation or assertion.
 
@@ -59,7 +67,7 @@ func NewAssertionOptions(config *Config, user *User) (*PublicKeyCredentialReques
 func NewAttestationOptions(config *Config, user *User) (*PublicKeyCredentialCreationOptions, error)
 ```
 
-**Parse assertion or attestation:**
+__Parse assertion or attestation:__
 
 ParseAssertion returns parsed [PublicKeyCredentialAssertion](https://w3c.github.io/webauthn/#iface-pkcredential).  ParseAttestation returns parsed [PublicKeyCredentialAttestation](https://w3c.github.io/webauthn/#iface-pkcredential).
 
@@ -68,7 +76,7 @@ func ParseAssertion(r io.Reader) (*PublicKeyCredentialAssertion, error)
 func ParseAttestation(r io.Reader) (*PublicKeyCredentialAttestation, error)
 ```
 
-**Verify assertion or attestation:**
+__Verify assertion or attestation:__
 
 VerifyAssertion verifies [PublicKeyCredentialAssertion](https://w3c.github.io/webauthn/#iface-pkcredential), returned by ParseAssertion.  AssertionExpectedData contains data needed to [verify an assertion](https://w3c.github.io/webauthn/#sctn-verifying-assertion).  
 
@@ -83,7 +91,7 @@ func VerifyAttestation(credentialAttestation *PublicKeyCredentialAttestation, ex
 
 See [examples](example_test.go).
 
-**Initialize Relying Party config:**
+__Initialize Relying Party config:__
 
 ```
 // cfg is initialized at startup and used throughout the program to create attestation and assertion options.  
@@ -104,7 +112,7 @@ if err != nil {
 }
 ```
 
-**Create attestation options:**
+__Create attestation options:__
 
 ```
 // user contains user data for which the Relying Party requests attestation or assertion.
@@ -125,7 +133,7 @@ if err != nil {
 // Send creationOptionsJSON to web client, which passes it to navigator.credentials.create().
 ```
 
-**Parse and verify attestation:**
+__Parse and verify attestation:__
 
 ```
 // Parse PublicKeyCredentialAttestation returned by navigator.credentials.create().
@@ -150,7 +158,7 @@ if err != nil {
 // User is registered.
 ```
 
-**Create assertion options:**
+__Create assertion options:__
 
 ```
 // user contains user data for which the Relying Party requests attestation or assertion.
@@ -174,7 +182,7 @@ if err != nil {
 // Send requestOptionsJSON to web client, which passes it to navigator.credentials.get().
 ```
 
-**Parse and verify assertion:**
+__Parse and verify assertion:__
 
 ```
 // Parse PublicKeyCredentialAssertion returned by navigator.credentials.get().
@@ -206,13 +214,14 @@ if err != nil {
 ## Limitations
 
 This library doesn't support:
+
 * Attestation validation through FIDO Metadata Service
 * Extensions
 * Token Binding
 * CA attestation
 * Elliptic Curve Direct Anonymous Attestation (ECDAA)
 
-## Credits
+## Thanks
 
 A huge thanks to [herrjemand](https://www.github.com/herrjemand) for his extensive [tutorials](https://medium.com/@herrjemand) on WebAuthn/FIDO2.  [apowers313](https://github.com/apowers313)'s [fido2-lib](https://github.com/apowers313/fido2-lib) pointed me in the direction of separating WebAuthn functionality from any networking protocol.  This library also uses attestation and assertion test data from herrjemand and apowers313.
 
