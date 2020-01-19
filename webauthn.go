@@ -14,6 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/*
+Package webauthn provides server-side authentication for clients using FIDO2 keys,
+FIDO U2F keys, tpm, etc. and is decoupled from `net/http` for easy integration
+with existing projects.
+
+It's modular so projects only import what is needed. Five attestation packages are
+available: fidou2f, androidkeystore, androidsafetynet, packed, and tpm.
+
+It doesn't import unreliable packages. It uses fxamacker/cbor because it doesn't
+crash and it's the most well-tested CBOR library available (v1.5 has 375+ tests
+and passed 3+ billion execs in coverage-guided fuzzing).
+
+A demo webapp (https://www.github.com/fxamacker/webauthn-demo) shows how to use
+this package with a security token like the YubiKey.
+*/
 package webauthn
 
 import (
