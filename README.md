@@ -1,25 +1,39 @@
-[![Build Status](https://travis-ci.com/fxamacker/webauthn.svg?branch=master)](https://travis-ci.com/fxamacker/webauthn)
+<!--[![Build Status](https://travis-ci.com/fxamacker/webauthn.svg?branch=master)](https://travis-ci.com/fxamacker/webauthn)-->
 [![Go Report Card](https://goreportcard.com/badge/github.com/fxamacker/webauthn)](https://goreportcard.com/report/github.com/fxamacker/webauthn)
 [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/fxamacker/webauthn)
 [![GitHub](https://img.shields.io/github/license/fxamacker/webauthn)](https://github.com/fxamacker/webauthn/blob/master/LICENSE)
 
-# WebAuthn library in Go
+# fxamacker/webauthn - FIDO2 server library in Go
 
-`webauthn` library is a reference implementation of [Web Authentication](https://w3c.github.io/webauthn/) to perform server-side [FIDO2 authentication](https://fidoalliance.org/fido2).
+WebAuthn (Web Authentication) is a [web standard](https://w3c.github.io/webauthn/) for authenticating users to web-based apps and services.  It's a core component of FIDO2, the successor of FIDO U2F legacy protocol.
 
-This library is simple, flexible, and extensible.
-* 1 core package and 1 dependency
-* 5 separate attestation packages (packed, tpm, androidkeystore, androidsafetynet, and fidou2f)
-* Decoupled from `net/http`
+This library performs server-side authentication for clients using FIDO2 keys, legacy FIDO U2F keys, etc.
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/57072051/68431219-4e066780-0177-11ea-8a3f-5a137cc76cf1.png" alt="Picture of FIDO U2F key">
+</p>
+
+**It's easy to use without rewriting your projects**, because it's decoupled from `net/http` and isn't a framework.
+
+For a simple webapp demo, see [`webauthn-demo`](https://www.github.com/fxamacker/webauthn-demo).
+
+## Project Goals ##
+fxamacker/webauthn is designed to be:
+* **small and nearly self-contained** -- only 1 external dependency: [fxamacker/cbor](https://www.github.com/fxamacker/cbor)
+* **simple and lightweight** -- decoupled from `net/http` and is not a framework
+* **modular** -- 5 separate attestation packages (packed, tpm, androidkeystore, androidsafetynet, and fidou2f), so you only import what you need.
+
+## Status ##
+**Expired certificates embedded in test data cause tests to fail**, so that should be resolved. Test datetime can be faked locally, but online tests will show failure and scare people.
+* :construction: **replace expired test certs** -- test certs expire and cause tests to fail, find a way to automate replacement
+* :construction: **more tests and fuzzing** -- add extensive tests and fuzzing similar to fxamacker/cbor and fxamacker/cbor-fuzz
+* :construction: **standards compliance** -- pass and publish results of standards conformance tests
+
+## Features
+* Easy server-side authentication for clients using FIDO2 keys, legacy FIDO U2F keys, and etc.
 * Register credential algorithm for use
 * Register attestation format for use
 * Create new attestation format by implementing AttestationStatement interface
-* Not a framework, use `webauthn` directly with new or existing applications to enable FIDO2 authentication
-
-For a simplified demo of this library using jQuery and Bootstrap, refer to [`webauthn-demo`](https://www.github.com/fxamacker/webauthn-demo).
-
-## Features
-
 * Credential algorithms: RS1, RS256, RS384, RS512, PS256, PS384, PS512, ES256, ES384, and ES512
 * Credential public key types: RSA, RSA-PSS, and ECDSA
 * Credential public key curves: P-256, P-384, and P-521
