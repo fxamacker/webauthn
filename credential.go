@@ -110,148 +110,83 @@ func (crv coseEllipticCurve) curve() elliptic.Curve {
 	}
 }
 
-const (
-	labelKty = 1
-	labelAlg = 3
-	labelCrv = -1
-	labelX   = -2
-	labelY   = -3
-	labelN   = -1
-	labelE   = -2
-)
-
 // ParseCredential parses credential public key encoded in COSE_Key format.
 func ParseCredential(coseKeyData []byte) (c *Credential, rest []byte, err error) {
-	m := make(map[int]interface{})
-
+	type rawCredential struct {
+		Kty    int             `cbor:"1,keyasint"`
+		Alg    int             `cbor:"3,keyasint"`
+		CrvOrN cbor.RawMessage `cbor:"-1,keyasint"`
+		XOrE   cbor.RawMessage `cbor:"-2,keyasint"`
+		Y      cbor.RawMessage `cbor:"-3,keyasint"`
+	}
+	var raw rawCredential
 	decoder := cbor.NewDecoder(bytes.NewReader(coseKeyData))
-	if err = decoder.Decode(&m); err != nil {
+	if err = decoder.Decode(&raw); err != nil {
 		return nil, nil, &UnmarshalSyntaxError{Type: "credential", Msg: err.Error()}
 	}
-
 	rest = coseKeyData[decoder.NumBytesRead():]
 
-	// Key type identification.
-	ktyIntf, ok := m[labelKty]
-	if !ok {
-		return nil, nil, &UnmarshalMissingFieldError{Type: "credential", Field: "key type"}
-	}
-	var kty int
-	switch v := ktyIntf.(type) {
-	case uint64:
-		kty = int(v)
-	case int64:
-		kty = int(v)
-	default:
-		return nil, nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid key type"}
-	}
-
-	// Key usage restriction.
-	algIntf, ok := m[labelAlg]
-	if !ok {
-		return nil, nil, &UnmarshalMissingFieldError{Type: "credential", Field: "algorithm"}
-	}
-	var alg int
-	switch v := algIntf.(type) {
-	case uint64:
-		alg = int(v)
-	case int64:
-		alg = int(v)
-	default:
-		return nil, nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid algorithm"}
-	}
-
-	signatureAlgorithm, err := CoseAlgToSignatureAlgorithm(alg)
+	signatureAlgorithm, err := CoseAlgToSignatureAlgorithm(raw.Alg)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	if len(m) == 4 {
-		if !signatureAlgorithm.IsRSA() || !coseKeyType(kty).isRSA() {
-			return nil, nil, &UnmarshalBadDataError{Type: "credential", Msg: "COSE key type " + strconv.Itoa(kty) + " and algorithm " + strconv.Itoa(alg) + " are mismatched"}
+	if coseKeyType(raw.Kty).isRSA() {
+		if !signatureAlgorithm.IsRSA() {
+			return nil, nil, &UnmarshalBadDataError{Type: "credential", Msg: "COSE key type " + strconv.Itoa(raw.Kty) + " and algorithm " + strconv.Itoa(raw.Alg) + " are mismatched"}
 		}
-		pubKey, err := parseRSAPublicKey(m)
-		if err != nil {
-			return nil, nil, err
+		if raw.CrvOrN == nil {
+			return nil, nil, &UnmarshalMissingFieldError{Type: "credential", Field: "RSA n"}
 		}
-		return &Credential{coseKeyData, signatureAlgorithm, pubKey}, rest, nil
-	} else if len(m) == 5 {
-		if !signatureAlgorithm.IsECDSA() || !coseKeyType(kty).isEllipticCurve() {
-			return nil, nil, &UnmarshalBadDataError{Type: "credential", Msg: "COSE key type " + strconv.Itoa(kty) + " and algorithm " + strconv.Itoa(alg) + " are mismatched"}
+		if raw.XOrE == nil {
+			return nil, nil, &UnmarshalMissingFieldError{Type: "credential", Field: "RSA e"}
 		}
-		pubKey, err := parseECDSAPublicKey(m)
-		if err != nil {
-			return nil, nil, err
+		var nb []byte
+		if err := cbor.Unmarshal(raw.CrvOrN, &nb); err != nil {
+			return nil, nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid RSA n"}
 		}
-		return &Credential{coseKeyData, signatureAlgorithm, pubKey}, rest, nil
-	} else {
-		return nil, nil, &UnsupportedFeatureError{Feature: "credential of COSE key type " + strconv.Itoa(kty) + " and algorithm " + strconv.Itoa(alg)}
-	}
-}
-
-func parseECDSAPublicKey(m map[int]interface{}) (crypto.PublicKey, error) {
-	crvIntf, ok := m[labelCrv]
-	if !ok {
-		return nil, &UnmarshalMissingFieldError{Type: "credential", Field: "ECDSA curve"}
-	}
-	var crvID int
-	switch v := crvIntf.(type) {
-	case uint64:
-		crvID = int(v)
-	case int64:
-		crvID = int(v)
-	default:
-		return nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid ECDSA curve"}
+		var eb []byte
+		if err := cbor.Unmarshal(raw.XOrE, &eb); err != nil {
+			return nil, nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid RSA e"}
+		}
+		n := new(big.Int).SetBytes(nb)
+		e := new(big.Int).SetBytes(eb)
+		return &Credential{coseKeyData, signatureAlgorithm, &rsa.PublicKey{N: n, E: int(e.Int64())}}, rest, nil
 	}
 
-	curve := coseEllipticCurve(crvID).curve()
-	if curve == nil {
-		return nil, &UnsupportedFeatureError{Feature: "credential COSE curve " + strconv.Itoa(crvID)}
+	if coseKeyType(raw.Kty).isEllipticCurve() {
+		if !signatureAlgorithm.IsECDSA() {
+			return nil, nil, &UnmarshalBadDataError{Type: "credential", Msg: "COSE key type " + strconv.Itoa(raw.Kty) + " and algorithm " + strconv.Itoa(raw.Alg) + " are mismatched"}
+		}
+		if raw.CrvOrN == nil {
+			return nil, nil, &UnmarshalMissingFieldError{Type: "credential", Field: "ECDSA curve"}
+		}
+		if raw.XOrE == nil {
+			return nil, nil, &UnmarshalMissingFieldError{Type: "credential", Field: "ECDSA x"}
+		}
+		if raw.Y == nil {
+			return nil, nil, &UnmarshalMissingFieldError{Type: "credential", Field: "ECDSA y"}
+		}
+		var crvID int
+		if err := cbor.Unmarshal(raw.CrvOrN, &crvID); err != nil {
+			return nil, nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid ECDSA curve"}
+		}
+		curve := coseEllipticCurve(crvID).curve()
+		if curve == nil {
+			return nil, nil, &UnsupportedFeatureError{Feature: "credential COSE curve " + strconv.Itoa(crvID)}
+		}
+		var xb []byte
+		if err := cbor.Unmarshal(raw.XOrE, &xb); err != nil {
+			return nil, nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid ECDSA x"}
+		}
+		var yb []byte
+		if err := cbor.Unmarshal(raw.Y, &yb); err != nil {
+			return nil, nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid ECDSA y"}
+		}
+		x := new(big.Int).SetBytes(xb)
+		y := new(big.Int).SetBytes(yb)
+		return &Credential{coseKeyData, signatureAlgorithm, &ecdsa.PublicKey{Curve: curve, X: x, Y: y}}, rest, nil
 	}
 
-	xIntf, ok := m[labelX]
-	if !ok {
-		return nil, &UnmarshalMissingFieldError{Type: "credential", Field: "ECDSA x"}
-	}
-	rawX, ok := xIntf.([]byte)
-	if !ok {
-		return nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid ECDSA x"}
-	}
-
-	yIntf, ok := m[labelY]
-	if !ok {
-		return nil, &UnmarshalMissingFieldError{Type: "credential", Field: "ECDSA y"}
-	}
-	rawY, ok := yIntf.([]byte)
-	if !ok {
-		return nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid ECDSA y"}
-	}
-
-	x := new(big.Int).SetBytes(rawX)
-	y := new(big.Int).SetBytes(rawY)
-	return &ecdsa.PublicKey{Curve: curve, X: x, Y: y}, nil
-}
-
-func parseRSAPublicKey(m map[int]interface{}) (crypto.PublicKey, error) {
-	nIntf, ok := m[labelN]
-	if !ok {
-		return nil, &UnmarshalMissingFieldError{Type: "credential", Field: "RSA n"}
-	}
-	rawN, ok := nIntf.([]byte)
-	if !ok {
-		return nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid RSA n"}
-	}
-
-	eIntf, ok := m[labelE]
-	if !ok {
-		return nil, &UnmarshalMissingFieldError{Type: "credential", Field: "RSA e"}
-	}
-	rawE, ok := eIntf.([]byte)
-	if !ok {
-		return nil, &UnmarshalBadDataError{Type: "credential", Msg: "invalid RSA e"}
-	}
-
-	n := new(big.Int).SetBytes(rawN)
-	e := new(big.Int).SetBytes(rawE)
-	return &rsa.PublicKey{N: n, E: int(e.Int64())}, nil
+	return nil, nil, &UnsupportedFeatureError{Feature: "credential of COSE key type " + strconv.Itoa(raw.Kty) + " and algorithm " + strconv.Itoa(raw.Alg)}
 }

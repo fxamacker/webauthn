@@ -50,9 +50,9 @@ type AttestationStatement interface {
 
 func parseAttestationObject(data []byte) (authnData *AuthenticatorData, attStmt AttestationStatement, err error) {
 	type rawAttestationObject struct {
-		AuthnData []byte                 `cbor:"authData"`
-		Fmt       string                 `cbor:"fmt"`
-		AttStmt   map[string]interface{} `cbor:"attStmt"`
+		AuthnData []byte          `cbor:"authData"`
+		Fmt       string          `cbor:"fmt"`
+		AttStmt   cbor.RawMessage `cbor:"attStmt"`
 	}
 	var raw rawAttestationObject
 	if err = cbor.Unmarshal(data, &raw); err != nil {
@@ -72,8 +72,7 @@ func parseAttestationObject(data []byte) (authnData *AuthenticatorData, attStmt 
 	if len(authnData.CredentialID) == 0 || authnData.Credential == nil {
 		return nil, nil, &UnmarshalMissingFieldError{Type: "attestation object", Field: "credential data"}
 	}
-	attStmtBytes, _ := cbor.Marshal(raw.AttStmt, cbor.EncOptions{Canonical: true})
-	if attStmt, err = parseAttestationStatement(raw.Fmt, attStmtBytes); err != nil {
+	if attStmt, err = parseAttestationStatement(raw.Fmt, raw.AttStmt); err != nil {
 		return nil, nil, err
 	}
 	return

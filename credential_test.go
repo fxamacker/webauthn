@@ -18,6 +18,16 @@ import (
 	"github.com/fxamacker/cbor"
 )
 
+const (
+	labelKty = 1
+	labelAlg = 3
+	labelCrv = -1
+	labelX   = -2
+	labelY   = -3
+	labelN   = -1
+	labelE   = -2
+)
+
 var (
 	coseKeyES256 = map[int]interface{}{
 		labelKty: coseKeyTypeEllipticCurve,
@@ -198,12 +208,12 @@ var parseCredentialTests = []parseCredentialTest{
 
 var parseCredentialErrorTests = []parseCredentialErrorTest{
 	{"invalid cbor data", []byte("hello"), "credential: failed to unmarshal: EOF"},
-	{"incomplete input data", cborMarshal(incompleteKey), "credential of COSE key type 2 and algorithm -7 is not supported"},
-	{"invalid alg data type", cborMarshal(invalidAlg), "credential: invalid algorithm"},
-	{"missing alg", cborMarshal(missingAlg), "credential: missing algorithm"},
+	{"incomplete input data", cborMarshal(incompleteKey), "credential: missing ECDSA curve"},
+	{"invalid alg data type", cborMarshal(invalidAlg), "credential: failed to unmarshal: cbor: cannot unmarshal"},
+	{"missing alg", cborMarshal(missingAlg), "webauthn: COSE algorithm 0 is not registered"},
 	{"unsupported alg", cborMarshal(unsupportedAlg), "COSE algorithm -8 is not registered"},
-	{"invalid kty data type", cborMarshal(invalidKty), "credential: invalid key type"},
-	{"missing kty", cborMarshal(missingKty), "credential: missing key type"},
+	{"invalid kty data type", cborMarshal(invalidKty), "credential: failed to unmarshal: cbor: cannot unmarshal"},
+	{"missing kty", cborMarshal(missingKty), "webauthn: credential of COSE key type 0 and algorithm -7 is not supported"},
 	{"mismatched alg and kty", cborMarshal(mismatchAlgKty1), "credential: COSE key type 3 and algorithm -7 are mismatched"},
 	{"mismatched alg and kty", cborMarshal(mismatchAlgKty2), "credential: COSE key type 2 and algorithm -257 are mismatched"},
 	{"invalid curve data type", cborMarshal(invalidCurve), "credential: invalid ECDSA curve"},
@@ -220,7 +230,7 @@ var parseCredentialErrorTests = []parseCredentialErrorTest{
 }
 
 func cborMarshal(itf interface{}) []byte {
-	data, err := cbor.Marshal(itf, cbor.EncOptions{Canonical: true})
+	data, err := cbor.Marshal(itf, cbor.EncOptions{Sort: cbor.SortCanonical})
 	if err != nil {
 		panic(err)
 	}
