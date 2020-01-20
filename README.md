@@ -20,7 +20,7 @@ A [demo webapp (webauthn-demo)](https://www.github.com/fxamacker/webauthn-demo) 
 </p>
 
 ## What's WebAuthn?
-WebAuthn (Web Authentication) is a [W3C web standard](https://www.w3.org/TR/webauthn-2/) for authenticating users to web-based apps and services.  It's a core component of FIDO2, the successor of FIDO U2F legacy protocol.
+WebAuthn (Web Authentication) is a [W3C web standard](https://www.w3.org/TR/webauthn/) for authenticating users to web-based apps and services.  It's a core component of [FIDO2](https://en.wikipedia.org/wiki/FIDO2_Project), the successor of FIDO U2F legacy protocol.
 
 ## Project Goals ##
 fxamacker/webauthn is designed to be:
