@@ -5,13 +5,15 @@
 
 # WebAuthn server library (Go/Golang)
 
-This [WebAuthn](https://en.wikipedia.org/wiki/WebAuthn) library performs server-side authentication for clients using FIDO2 keys, FIDO U2F keys, TPM, and etc.
+This [WebAuthn](https://en.wikipedia.org/wiki/WebAuthn) server library provides registration and authentication for clients using FIDO2 keys, FIDO U2F keys, TPM, and etc.
 
-It's decoupled from `net/http` and doesn't force you to use a framework.  So it's easy to use in existing projects.
+* It's decoupled from `net/http` and doesn't force you to use a framework.  So it's easy to use in existing projects.
 
-It's modular so you only import what you need. Five attestation packages are available: fidou2f, androidkeystore, androidsafetynet, packed, and tpm.
+* It's modular so you only import the attestation formats you need.  This helps your software avoid bloat.
 
-It doesn't import unreliable 3rd-party packages. It uses [fxamacker/cbor](https://github.com/fxamacker/cbor) because it doesn't crash and it's the most well-tested CBOR library available (v1.5 has 375+ tests and passed 3+ billion execs in coverage-guided fuzzing).
+* Six attestation formats are provided: fidou2f, androidkeystore, androidsafetynet, packed, tpm, and none.
+
+* It doesn't import unreliable packages. It imports [fxamacker/cbor](https://github.com/fxamacker/cbor) because it doesn't crash and it's the most well-tested CBOR library available (v1.5 has 375+ tests and passed 3+ billion execs in coverage-guided fuzzing).
 
 A [demo webapp (webauthn-demo)](https://www.github.com/fxamacker/webauthn-demo) shows how to use this library with a security token like the YubiKey pictured here.
 
@@ -20,21 +22,21 @@ A [demo webapp (webauthn-demo)](https://www.github.com/fxamacker/webauthn-demo) 
 </p>
 
 ## What's WebAuthn?
-WebAuthn (Web Authentication) is a [W3C web standard](https://www.w3.org/TR/webauthn-2/) for authenticating users to web-based apps and services.  It's a core component of FIDO2, the successor of FIDO U2F legacy protocol.
+WebAuthn (Web Authentication) is a [W3C web standard](https://www.w3.org/TR/webauthn/) for authenticating users to web-based apps and services.  It's a core component of [FIDO2](https://en.wikipedia.org/wiki/FIDO2_Project), the successor of FIDO U2F legacy protocol.
 
-## Project Goals ##
+## Design Goals
 fxamacker/webauthn is designed to be:
 
 * __small and no unreliable imports__ -- only 1 external dependency [fxamacker/cbor](https://www.github.com/fxamacker/cbor)
 * __simple and lightweight__ -- decoupled from `net/http` and is not a framework
 * __modular__ -- 5 separate attestation packages (packed, tpm, androidkeystore, androidsafetynet, and fidou2f), so you only import what you need.
 
-## Todo ##
-It works but needs some cleanup.  Expired certificates embedded in test data cause online (travis-ci) unit tests to fail.  A temporary workaround is to fake datetime when running unit tests locally until this is resolved.
+## Status
+It's functional enough to demo but unit tests need work.  Expired certs embedded in test data can make unit tests to fail.  A temporary workaround is to fake datetime when running unit tests locally until expired test data are replaced.
 
-* __replace expired certs in unit tests__ -- automate replacement of these and/or make expiration dates longer
+* __replace expired certs in unit tests__ -- automate replacement of test certs and/or make expiration dates longer
 * __more tests and fuzzing__ -- add more extensive tests and fuzzing like fxamacker/cbor and fxamacker/cbor-fuzz
-* __standards compliance__ -- pass and publish results of standards conformance tests
+* __standards compliance__ -- publish results of standards conformance tests when ready to announce
 
 ## Features
 
@@ -47,6 +49,11 @@ It works but needs some cleanup.  Expired certificates embedded in test data cau
 * Credential public key curves: P-256, P-384, and P-521
 * Attestation formats: fido-u2f, android-key, android-safetynet, packed, tpm, and none
 * Attestation types: Basic, Self, and None
+
+## System Requirements
+
+* Go 1.12 (or newer)
+* Tested on x86_64 but it should work on other little-endian systems supported by Go.
 
 ## Installation 
 
@@ -221,6 +228,12 @@ This library doesn't support:
 * CA attestation
 * Elliptic Curve Direct Anonymous Attestation (ECDAA)
 
+## Security Policy
+
+Security fixes are provided for the latest released version.
+
+To report security vulnerabilities, please email faye.github@gmail.com and allow time for the problem to be resolved before reporting it to the public.
+
 ## Special Thanks
 
 * Montgomery Edwards⁴⁴⁸ [(x448)](https://github.com/x448) for updating README.md and filing helpful issues.
@@ -231,7 +244,7 @@ This library doesn't support:
 
 This library uses attestation and assertion test data from both herrjemand and apowers313.
 
-## License 
+## License
 
 Copyright 2019-present [Faye Amacker](https://github.com/fxamacker)
 
