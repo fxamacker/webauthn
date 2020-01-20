@@ -7,11 +7,13 @@
 
 This [WebAuthn](https://en.wikipedia.org/wiki/WebAuthn) server library provides registration and authentication for clients using FIDO2 keys, FIDO U2F keys, TPM, and etc.
 
-It's decoupled from `net/http` and doesn't force you to use a framework.  So it's easy to use in existing projects.
+* It's decoupled from `net/http` and doesn't force you to use a framework.  So it's easy to use in existing projects.
 
-It's modular so you only import what you need. Five attestation packages are available: fidou2f, androidkeystore, androidsafetynet, packed, and tpm.
+* It's modular so you only import the attestation formats you need.  This helps your software avoid bloat.
 
-It doesn't import unreliable 3rd-party packages. It uses [fxamacker/cbor](https://github.com/fxamacker/cbor) because it doesn't crash and it's the most well-tested CBOR library available (v1.5 has 375+ tests and passed 3+ billion execs in coverage-guided fuzzing).
+* Six attestation formats are provided: fidou2f, androidkeystore, androidsafetynet, packed, tpm, and none.
+
+* It doesn't import unreliable packages. It imports [fxamacker/cbor](https://github.com/fxamacker/cbor) because it doesn't crash and it's the most well-tested CBOR library available (v1.5 has 375+ tests and passed 3+ billion execs in coverage-guided fuzzing).
 
 A [demo webapp (webauthn-demo)](https://www.github.com/fxamacker/webauthn-demo) shows how to use this library with a security token like the YubiKey pictured here.
 
