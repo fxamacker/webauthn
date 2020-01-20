@@ -5,7 +5,7 @@
 
 # WebAuthn server library (Go/Golang)
 
-This [WebAuthn](https://en.wikipedia.org/wiki/WebAuthn) library performs server-side authentication for clients using FIDO2 keys, FIDO U2F keys, TPM, and etc.
+This [WebAuthn](https://en.wikipedia.org/wiki/WebAuthn) server library provides registration and authentication for clients using FIDO2 keys, FIDO U2F keys, TPM, and etc.
 
 It's decoupled from `net/http` and doesn't force you to use a framework.  So it's easy to use in existing projects.
 
