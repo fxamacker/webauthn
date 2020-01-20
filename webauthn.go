@@ -15,9 +15,9 @@ limitations under the License.
 */
 
 /*
-Package webauthn provides server-side authentication for clients using FIDO2 keys,
-FIDO U2F keys, tpm, etc. and is decoupled from `net/http` for easy integration
-with existing projects.
+Package webauthn provides server-side registration and authentication for clients
+using FIDO2 keys, FIDO U2F keys, tpm, etc. and is decoupled from `net/http` for
+easy integration with existing projects.
 
 It's modular so projects only import what is needed. Five attestation packages are
 available: fidou2f, androidkeystore, androidsafetynet, packed, and tpm.
