@@ -25,7 +25,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/fxamacker/cbor"
+	"github.com/fxamacker/cbor/v2"
 	"github.com/fxamacker/webauthn"
 )
 

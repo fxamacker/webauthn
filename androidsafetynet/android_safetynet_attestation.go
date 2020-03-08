@@ -25,7 +25,7 @@ import (
 	"encoding/pem"
 	"fmt"
 
-	"github.com/fxamacker/cbor"
+	"github.com/fxamacker/cbor/v2"
 	"github.com/fxamacker/webauthn"
 )
 

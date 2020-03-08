@@ -28,7 +28,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/fxamacker/cbor"
+	"github.com/fxamacker/cbor/v2"
 )
 
 const (
@@ -243,7 +243,8 @@ var parseCredentialErrorTests = []parseCredentialErrorTest{
 }
 
 func cborMarshal(itf interface{}) []byte {
-	data, err := cbor.Marshal(itf, cbor.EncOptions{Sort: cbor.SortCanonical})
+	em, _ := cbor.EncOptions{Sort: cbor.SortCanonical}.EncMode()
+	data, err := em.Marshal(itf)
 	if err != nil {
 		panic(err)
 	}

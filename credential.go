@@ -30,7 +30,7 @@ import (
 	"math/big"
 	"strconv"
 
-	"github.com/fxamacker/cbor"
+	"github.com/fxamacker/cbor/v2"
 )
 
 // Credential represents credential algorithm and public key used to verify assertion signatures.

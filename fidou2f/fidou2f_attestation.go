@@ -23,7 +23,7 @@ import (
 	"crypto/x509"
 	"fmt"
 
-	"github.com/fxamacker/cbor"
+	"github.com/fxamacker/cbor/v2"
 	"github.com/fxamacker/webauthn"
 )
 
