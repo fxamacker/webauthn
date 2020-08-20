@@ -170,6 +170,11 @@ func verifyAttestationCert(attestnCert *x509.Certificate, caCerts []*x509.Certif
 				verifyOptions.Intermediates.AddCert(c)
 			}
 		}
+	} else if len(caCerts) == 0 {
+		if bytes.Equal(attestnCert.RawIssuer, attestnCert.RawSubject) {
+			verifyOptions.Roots = x509.NewCertPool()
+			verifyOptions.Roots.AddCert(attestnCert)
+		}
 	}
 
 	var chains [][]*x509.Certificate
