@@ -151,6 +151,25 @@ var (
 		0x76, 0x92, 0x0C, 0xBF, 0x79, 0x26, 0x77, 0x53, 0xD1, 0xA5, 0x6A, 0xAC,
 	}
 
+	basicAttestation2 = `{
+		"id": "Rd2IAgXJmfAS0KF-LvjRyNtLIyAba4DrfMHQ8K1WZQc",
+		"rawId": "Rd2IAgXJmfAS0KF-LvjRyNtLIyAba4DrfMHQ8K1WZQc=",
+		"response": {
+		  "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiNmpra1BjRmJhU3JuNVNlbU56Nzk0OEEwNmJoc1FWbmFFd0FiMlk4YktUdyIsIm9yaWdpbiI6Imh0dHBzOi8vbG9jYWxob3N0Ojg0NDMiLCJjcm9zc09yaWdpbiI6ZmFsc2UsImV4dHJhX2tleXNfbWF5X2JlX2FkZGVkX2hlcmUiOiJkbyBub3QgY29tcGFyZSBjbGllbnREYXRhSlNPTiBhZ2FpbnN0IGEgdGVtcGxhdGUuIFNlZSBodHRwczovL2dvby5nbC95YWJQZXgifQ==",
+		  "attestationObject": "o2NmbXRmcGFja2VkZ2F0dFN0bXSjY2FsZyZjc2lnWEgwRgIhAKlA2CJJnO1E6akm4FhAZAwm0b1yCKWlJEzY1ZYjuk2wAiEA4DPzgSsOKLAhgMTxTN79UQTtIGRGmxofc75EjgkY2j1jeDVjgVkB0TCCAc0wggFvoAMCAQICAQEwDQYJKoZIhvcNAQELBQAwYDELMAkGA1UEBgwCVVMxETAPBgNVBAoMCENocm9taXVtMSIwIAYDVQQLDBlBdXRoZW50aWNhdG9yIEF0dGVzdGF0aW9uMRowGAYDVQQDDBFCYXRjaCBDZXJ0aWZpY2F0ZTAeFw0xNzA3MTQwMjQwMDBaFw00MDA4MTUwNTMxMzlaMGAxCzAJBgNVBAYMAlVTMREwDwYDVQQKDAhDaHJvbWl1bTEiMCAGA1UECwwZQXV0aGVudGljYXRvciBBdHRlc3RhdGlvbjEaMBgGA1UEAwwRQmF0Y2ggQ2VydGlmaWNhdGUwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASNYX5lyVCOZLzFZzrIKmeZ2jwURmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEBoxcwFTATBgsrBgEEAYLlHAIBAQQEAwIFIDANBgkqhkiG9w0BAQsFAANJADBGAiEAnx-HQrWzbGctuVNEtnv-ChWzvyvfm0qQsoQELFUIZGoCIQCUy6p2R1sZ3uhcXzQ95-xN3rJW59rBqtJ4YEZwHJdKVGhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAQECAwQFBgcIAQIDBAUGBwgAIEXdiAIFyZnwEtChfi740cjbSyMgG2uA63zB0PCtVmUHpQECAyYgASFYIKOj8A6q4LizXUzby0w_PpgxGFdYHpvL5k5lHSfJ6jnvIlgg-NA3xLMpn3egM-OH1jdUtvxcic4NPyufz2tZc5k_ZUA="
+		},
+		"type": "public-key"
+	  }`
+
+	basicAttestation2Sig = []byte{
+		48, 70, 2, 33, 0, 169, 64, 216, 34, 73, 156, 237, 68, 233, 169, 38, 224, 88, 64, 100, 12, 38, 209, 189, 114, 8, 165, 165, 36, 76, 216, 213, 150, 35, 186, 77, 176, 2, 33, 0, 224, 51, 243, 129, 43, 14, 40, 176, 33, 128, 196, 241, 76, 222, 253, 81, 4, 237, 32, 100, 70, 155, 26, 31, 115, 190, 68, 142, 9, 24, 218, 61,
+	}
+
+	basicAttestation2CredCert = []byte{
+		48, 130, 1, 205, 48, 130, 1, 111, 160, 3, 2, 1, 2, 2, 1, 1, 48, 13, 6, 9, 42, 134, 72, 134, 247,
+		13, 1, 1, 11, 5, 0, 48, 96, 49, 11, 48, 9, 6, 3, 85, 4, 6, 12, 2, 85, 83, 49, 17, 48, 15, 6, 3, 85, 4, 10, 12, 8, 67, 104, 114, 111, 109, 105, 117, 109, 49, 34, 48, 32, 6, 3, 85, 4, 11, 12, 25, 65, 117, 116, 104, 101, 110, 116, 105, 99, 97, 116, 111, 114, 32, 65, 116, 116, 101, 115, 116, 97, 116, 105, 111, 110, 49, 26, 48, 24, 6, 3, 85, 4, 3, 12, 17, 66, 97, 116, 99, 104, 32, 67, 101, 114, 116, 105, 102, 105, 99, 97, 116, 101, 48, 30, 23, 13, 49, 55, 48, 55, 49, 52, 48, 50, 52, 48, 48, 48, 90, 23, 13, 52, 48, 48, 56, 49, 53, 48, 53, 51, 49, 51, 57, 90, 48, 96, 49, 11, 48, 9, 6, 3, 85, 4, 6, 12, 2, 85, 83, 49, 17, 48, 15, 6, 3, 85, 4, 10, 12, 8, 67, 104, 114, 111, 109, 105, 117, 109, 49, 34, 48, 32, 6, 3, 85, 4, 11, 12, 25, 65, 117, 116, 104, 101, 110, 116, 105, 99, 97, 116, 111, 114, 32, 65, 116, 116, 101, 115, 116, 97, 116, 105, 111, 110, 49, 26, 48, 24, 6, 3, 85, 4, 3, 12, 17, 66, 97, 116, 99, 104, 32, 67, 101, 114, 116, 105, 102, 105, 99, 97, 116, 101, 48, 89, 48, 19, 6, 7, 42, 134, 72, 206, 61, 2, 1, 6, 8, 42, 134, 72, 206, 61, 3, 1, 7, 3, 66, 0, 4, 141, 97, 126, 101, 201, 80, 142, 100, 188, 197, 103, 58, 200, 42, 103, 153, 218, 60, 20, 70, 104, 44, 37, 140, 70, 63, 255, 223, 88, 223, 210, 250, 62, 108, 55, 139, 83, 215, 149, 196, 164, 223, 251, 65, 153, 237, 215, 134, 47, 35, 171, 175, 2, 3, 180, 184, 145, 27, 160, 86, 153, 148, 225, 1, 163, 23, 48, 21, 48, 19, 6, 11, 43, 6, 1, 4, 1, 130, 229, 28, 2, 1, 1, 4, 4, 3, 2, 5, 32, 48, 13, 6, 9, 42, 134, 72, 134, 247, 13, 1, 1, 11, 5, 0, 3, 73, 0, 48, 70, 2, 33, 0, 159, 31, 135, 66, 181, 179, 108, 103, 45, 185, 83, 68, 182, 123, 254, 10, 21, 179, 191, 43, 223, 155, 74, 144, 178, 132, 4, 44, 85, 8, 100, 106, 2, 33, 0, 148, 203, 170, 118, 71, 91, 25, 222, 232, 92, 95, 52, 61, 231, 236, 77, 222, 178, 86, 231, 218, 193, 170, 210, 120, 96, 70, 112, 28, 151, 74, 84,
+	}
+
 	// Test data from herrjemand's verify.packed.webauthn.js (2019) at https://gist.github.com/herrjemand/dbeb2c2b76362052e5268224660b6fbc
 	selfAttestation1 = `{
 		"id":    "H6X2BnnjgOzu_Oj87vpRnwMJeJYVzwM3wtY1lhAfQ14",
@@ -226,6 +245,15 @@ var parseTests = []parseTest{
 		nil,
 	},
 	{
+		"basic attestation without CA",
+		[]byte(basicAttestation2),
+		x509.ECDSAWithSHA256,
+		basicAttestation2Sig,
+		parseCertificate(basicAttestation2CredCert),
+		nil,
+		nil,
+	},
+	{
 		"self attestation 1",
 		[]byte(selfAttestation1),
 		x509.SHA1WithRSA,
@@ -238,6 +266,7 @@ var parseTests = []parseTest{
 
 var verifyTests = []verifyTest{
 	{"basic attestation 1", []byte(basicAttestation1), webauthn.AttestationTypeBasic, []*x509.Certificate{parseCertificate(basicAttestation1CredCert), parseCertificate(basicAttestation1CACert0), parseCertificate(basicAttestation1CACert1)}},
+	{"basic attestation without CA", []byte(basicAttestation2), webauthn.AttestationTypeBasic, []*x509.Certificate{parseCertificate(basicAttestation2CredCert)}},
 	{"self attestation 1", []byte(selfAttestation1), webauthn.AttestationTypeSelf, nil},
 }
 
