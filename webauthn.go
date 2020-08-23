@@ -39,7 +39,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"strconv"
 )
 
 // User represents user data for which the Relying Party requests attestation or assertion.
@@ -85,10 +84,8 @@ func NewAttestationOptions(config *Config, user *User) (*PublicKeyCredentialCrea
 	}
 
 	challenge := make([]byte, config.ChallengeLength)
-	if n, err := rand.Read(challenge); err != nil {
+	if _, err := rand.Read(challenge); err != nil {
 		return nil, errors.New("failed to generate challenge: " + err.Error())
-	} else if n != config.ChallengeLength {
-		return nil, errors.New("failed to generate " + strconv.Itoa(config.ChallengeLength) + " bytes of challenge")
 	}
 
 	var excludeCredentials []PublicKeyCredentialDescriptor
@@ -212,10 +209,8 @@ func VerifyAttestation(credentialAttestation *PublicKeyCredentialAttestation, ex
 // NewAssertionOptions returns a PublicKeyCredentialRequestOptions from config and user.
 func NewAssertionOptions(config *Config, user *User) (*PublicKeyCredentialRequestOptions, error) {
 	challenge := make([]byte, config.ChallengeLength)
-	if n, err := rand.Read(challenge); err != nil {
+	if _, err := rand.Read(challenge); err != nil {
 		return nil, errors.New("failed to generate challenge: " + err.Error())
-	} else if n != config.ChallengeLength {
-		return nil, errors.New("failed to generate " + strconv.Itoa(config.ChallengeLength) + " bytes of challenge")
 	}
 
 	var allowCredentials []PublicKeyCredentialDescriptor
