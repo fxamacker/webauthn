@@ -21,7 +21,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"sync"
-	"sync/atomic"
 
 	"github.com/fxamacker/cbor/v2"
 )
@@ -187,55 +186,39 @@ func (credentialAttestation *PublicKeyCredentialAttestation) VerifyAttestationSt
 	return credentialAttestation.AttStmt.Verify(clientDataHash[:], credentialAttestation.AuthnData)
 }
 
-type attestationFormat struct {
-	name  string
-	parse func([]byte) (AttestationStatement, error)
-}
-
 var (
-	formatsMu     sync.Mutex
-	atomicFormats atomic.Value
+	formatsMu     sync.RWMutex
+	atomicFormats = make(map[string]func([]byte) (AttestationStatement, error))
 )
 
 // RegisterAttestationFormat registers attestation statement format with a function that parses attestation statement of given format.
 func RegisterAttestationFormat(name string, parse func([]byte) (AttestationStatement, error)) {
-	registered := false
 	formatsMu.Lock()
-	formats, _ := atomicFormats.Load().([]attestationFormat)
-	for i := 0; i < len(formats); i++ {
-		if formats[i].name == name {
-			formats[i].parse = parse
-			registered = true
-			break
-		}
+	defer formatsMu.Unlock()
+
+	if parse == nil {
+		panic("webauth: register attestation parse function is nil")
 	}
-	if registered {
-		atomicFormats.Store(formats)
-	} else {
-		atomicFormats.Store(append(formats, attestationFormat{name, parse}))
+
+	if _, ok := atomicFormats[name]; ok {
+		panic("webauth: register called twice for attestation parse function " + name)
 	}
-	formatsMu.Unlock()
+	atomicFormats[name] = parse
 }
 
 // UnregisterAttestationFormat unregisters given attestation statement format.
 func UnregisterAttestationFormat(name string) {
 	formatsMu.Lock()
-	formats, _ := atomicFormats.Load().([]attestationFormat)
-	for i := 0; i < len(formats); i++ {
-		if formats[i].name == name {
-			atomicFormats.Store(append(formats[:i], formats[i+1:]...))
-			break
-		}
-	}
-	formatsMu.Unlock()
+	defer formatsMu.Unlock()
+	delete(atomicFormats, name)
 }
 
 func parseAttestationStatement(format string, data []byte) (AttestationStatement, error) {
-	formats, _ := atomicFormats.Load().([]attestationFormat)
-	for _, f := range formats {
-		if f.name == format {
-			return f.parse(data)
-		}
+	formatsMu.RLock()
+	defer formatsMu.RUnlock()
+	parser, ok := atomicFormats[format]
+	if !ok {
+		return nil, &UnregisteredFeatureError{Feature: "attestation statement format " + format}
 	}
-	return nil, &UnregisteredFeatureError{Feature: "attestation statement format " + format}
+	return parser(data)
 }
